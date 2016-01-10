@@ -11,9 +11,11 @@ test('basic test', (assert) => {
   parseString(xml, (err, { actions } = {}) => {
     let { action } = actions
     let createActions = action.filter(({ action_type }) => action_type[0] === 'create_asset')
+    let permissionActions = action.filter(({ action_type }) => action_type[0] === 'set_permission')
     assert.error(err)
-    assert.equal(createActions.length, 2, 'two assets created')
+    assert.equal(createActions.length, 2, 'two create_asset actions created')
     assert.deepEquals(createActions.map(({ type_code }) => type_code[0]), ['folder', 'site'], 'correct assets created')
+    assert.equal(permissionActions.length, 2, 'two set_permission actions created')
     assert.end()
   })
 })

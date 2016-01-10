@@ -14,6 +14,7 @@ module.exports = function assetsToXML (assets) {
     let { children, dependant, exclusive, key, type } = asset
     let links = Object.keys(asset.link)
     let noticeLinks = links.filter(noticeLink)
+    let permissions = Object.keys(asset.permissions)
     let [ link ] = links.filter(linkTypeN)
     let value = asset.link[link]
 
@@ -27,6 +28,7 @@ module.exports = function assetsToXML (assets) {
     }).id
 
     noticeLinks.forEach(createLink)
+    permissions.forEach(setPermissions(asset.permissions))
 
     if (children && children.length) {
       children.forEach(processChild)
@@ -50,6 +52,31 @@ module.exports = function assetsToXML (assets) {
         link: 'notice',
         value: link
       })
+    }
+
+    function setPermissions (permissions) {
+      return function setPermission (permission) {
+        let { allow, deny } = permissions[permission]
+
+        if (allow) {
+          permissionsToSet(allow, true)
+        }
+
+        if (deny) {
+          permissionsToSet(deny, false)
+        }
+
+        function permissionsToSet (users, granted) {
+          users.forEach((userId) => {
+            xml.setPermission({
+              assetId,
+              permission,
+              granted,
+              userId
+            })
+          })
+        }
+      }
     }
 
     function linkTypeN (link) {
