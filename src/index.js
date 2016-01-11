@@ -18,24 +18,27 @@ module.exports = function assetsToXML (assets) {
     let [ link ] = links.filter(linkTypeN)
     let value = asset.link[link]
 
-    let assetId = assetMap[key] = createAsset({
+    let { id } = createAsset({
       parentId,
       type,
       link,
       value,
       dependant,
       exclusive
-    }).id
+    })
+    let assetId = assetMap[key] = id
 
-    noticeLinks.forEach(createLink)
+    noticeLinks.forEach(createLinks(asset.link))
     permissions.forEach(setPermissions(asset.permissions))
 
     if (children && children.length) {
-      children.forEach(processChild)
+      children.forEach(createChild(assetId))
     }
 
-    function processChild (child) {
-      processAsset(child, assetId)
+    function createChild (assetId) {
+      return function processChild (child) {
+        processAsset(child, assetId)
+      }
     }
 
     function createAsset (opts) {
@@ -45,28 +48,33 @@ module.exports = function assetsToXML (assets) {
       return xml.createAsset(opts)
     }
 
-    function createLink (link) {
-      xml.createLink({
-        to: assetMap[asset.link[link].key],
-        from: assetId,
-        link: 'notice',
-        value: link
-      })
+    function createLinks (links) {
+      return function createLink (link) {
+        xml.createLink({
+          to: assetMap[links[link].key],
+          from: assetId,
+          link: 'notice',
+          value: link
+        })
+      }
     }
 
     function setPermissions (permissions) {
       return function setPermission (permission) {
         let { allow, deny } = permissions[permission]
 
-        if (allow) {
-          permissionsToSet(allow, true)
+        allowUsers(allow)
+        denyUsers(deny)
+
+        function allowUsers (users) {
+          permissionsToSet(users, true)
         }
 
-        if (deny) {
-          permissionsToSet(deny, false)
+        function denyUsers (users) {
+          permissionsToSet(users, false)
         }
 
-        function permissionsToSet (users, granted) {
+        function permissionsToSet (users = [], granted) {
           users.forEach((userId) => {
             xml.setPermission({
               assetId,
