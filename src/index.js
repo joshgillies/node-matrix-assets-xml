@@ -11,14 +11,22 @@ module.exports = function assetsToXML (assets) {
   return xml.toString()
 
   function processAsset (asset, parentId) {
-    let { children, dependant, exclusive, key, type } = asset
-    let links = Object.keys(asset.link)
-    let noticeLinks = links.filter(noticeLink)
-    let permissions = Object.keys(asset.permissions)
-    let [ link ] = links.filter(linkTypeN)
-    let value = asset.link[link]
+    const {
+      children,
+      dependant,
+      exclusive,
+      key,
+      paths = [],
+      type
+    } = asset
+    const attributes = Object.keys(asset.attributes || {})
+    const links = Object.keys(asset.link)
+    const noticeLinks = links.filter(noticeLink)
+    const permissions = Object.keys(asset.permissions)
+    const [ link ] = links.filter(linkTypeN)
+    const value = asset.link[link]
 
-    let { id } = createAsset({
+    const { id } = createAsset({
       parentId,
       type,
       link,
@@ -26,8 +34,10 @@ module.exports = function assetsToXML (assets) {
       dependant,
       exclusive
     })
-    let assetId = assetMap[key] = id
+    const assetId = assetMap[key] = id
 
+    attributes.forEach(setAttributes(asset.attributes))
+    paths.forEach(setPaths)
     noticeLinks.forEach(createLinks(asset.link))
     permissions.forEach(setPermissions(asset.permissions))
 
@@ -39,6 +49,24 @@ module.exports = function assetsToXML (assets) {
       return function processChild (child) {
         processAsset(child, assetId)
       }
+    }
+
+    function setAttributes (attributes) {
+      return function setAttribute (attribute) {
+        let value = attributes[attribute]
+        xml.setAttribute({
+          assetId,
+          attribute,
+          value
+        })
+      }
+    }
+
+    function setPaths (path) {
+      xml.addPath({
+        assetId,
+        path
+      })
     }
 
     function createAsset (opts) {
