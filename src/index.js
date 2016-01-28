@@ -53,7 +53,7 @@ module.exports = function assetsToXML (assets) {
 
     function setAttributes (attributes) {
       return function setAttribute (attribute) {
-        let value = attributes[attribute]
+        const value = attributes[attribute]
         xml.setAttribute({
           assetId,
           attribute,
@@ -89,7 +89,7 @@ module.exports = function assetsToXML (assets) {
 
     function setPermissions (permissions) {
       return function setPermission (permission) {
-        let { allow, deny } = permissions[permission]
+        const { allow, deny } = permissions[permission]
 
         allowUsers(allow)
         denyUsers(deny)
