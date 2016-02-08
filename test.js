@@ -23,7 +23,7 @@ test('basic test', (assert) => {
     assert.equal(tests.create.length, 2, 'two create_asset tests created')
     assert.deepEquals(tests.create.map(({ type_code }) => type_code[0]), ['folder', 'site'], 'correct assets created')
     assert.deepEquals(new Set(tests.setAttribute.map(({ attribute }) => attribute[0])), new Set(['short_name', 'name']), 'correct asset attributes set')
-    assert.deepEquals(tests.setPath.map(({ path }) => path[0]), ['sites', 'my-site'], 'correct paths set')
+    assert.deepEquals(tests.setPath.map(({ path }) => path[0]), ['sites', 'Sites', 'my-site', 'My-Site'], 'correct paths set')
     assert.equal(tests.setPermission.length, 2, 'correct permissions set')
     assert.end()
   })
