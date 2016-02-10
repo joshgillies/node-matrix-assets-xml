@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/joshgillies/node-matrix-assets-xml#readme",
   "dependencies": {
-    "node-matrix-importer": "^1.1.1"
+    "node-matrix-importer": "^1.1.2"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
