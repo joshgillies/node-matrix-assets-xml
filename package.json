@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/joshgillies/node-matrix-assets-xml#readme",
   "dependencies": {
+    "node-matrix-assets": "^3.0.0",
     "node-matrix-importer": "^1.1.2"
   },
   "devDependencies": {
