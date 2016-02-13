@@ -12,21 +12,23 @@ module.exports = function assetsToXML (assets) {
 
   function processAsset (asset, parentId) {
     const {
-      children,
+      children = [],
       dependant,
       exclusive,
       key,
-      paths = [],
+      paths,
       type
     } = asset
-    const attributes = Object.keys(asset.attributes || {})
+
+    const attributes = Object.keys(asset.attributes)
     const links = Object.keys(asset.link)
-    const noticeLinks = links.filter(noticeLink)
     const permissions = Object.keys(asset.permissions)
+
+    const noticeLinks = links.filter(noticeLink)
     const [ link ] = links.filter(linkTypeN)
     const value = asset.link[link]
 
-    const { id } = createAsset({
+    const { id: assetId } = createAsset({
       parentId,
       type,
       link,
@@ -34,16 +36,14 @@ module.exports = function assetsToXML (assets) {
       dependant,
       exclusive
     })
-    const assetId = assetMap[key] = id
+
+    assetMap[key] = assetId
 
     attributes.forEach(setAttributes(asset.attributes))
     paths.forEach(setPaths)
     noticeLinks.forEach(createLinks(asset.link))
     permissions.forEach(setPermissions(asset.permissions))
-
-    if (children && children.length) {
-      children.forEach(createChild(assetId))
-    }
+    children.forEach(createChild(assetId))
 
     function createChild (assetId) {
       return function processChild (child) {
