@@ -1,14 +1,26 @@
 import Importer from 'node-matrix-importer'
 
 module.exports = function assetsToXML (assets) {
-  const xml = new Importer({
-    sortActions: true
-  })
   let assetMap = []
+  let xml
 
-  processAsset(assets)
+  if (assets instanceof Importer) {
+    xml = assets
 
-  return xml.toString()
+    return processAssets
+  } else {
+    xml = new Importer({
+      sortActions: true
+    })
+
+    return processAssets(assets)
+  }
+
+  function processAssets (assets) {
+    processAsset(assets)
+
+    return xml.toString()
+  }
 
   function processAsset (asset, parentId) {
     const {

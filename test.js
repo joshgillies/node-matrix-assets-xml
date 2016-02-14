@@ -1,16 +1,16 @@
 import test from 'tape'
 import assetsToXML from './src'
 import { parseString } from 'xml2js'
+import Importer from 'node-matrix-importer'
 import { context } from 'node-matrix-assets'
 
-test('basic test', (assert) => {
-  const asset = context()
-  const tree = asset('folder', { name: 'Sites', link: 'type_2', paths: 'sites' },
-    asset('site', { name: 'My Site', paths: 'my-site' })
-  )
-  const xml = assetsToXML(tree)
+const asset = context()
+const tree = asset('folder', { name: 'Sites', link: 'type_2', paths: 'sites' },
+  asset('site', { name: 'My Site', paths: 'my-site' })
+)
 
-  parseString(xml, (err, { actions: { action: actions } } = { actions: [] }) => {
+const xmlTests = (assert) => {
+  return (err, { actions: { action: actions } } = { actions: [] }) => {
     const byType = test => ({ action_type: [ type ] }) => type === test
     const tests = {
       create: actions.filter(byType('create_asset')),
@@ -25,5 +25,19 @@ test('basic test', (assert) => {
     assert.deepEquals(tests.setPath.map(({ path: [ path ] }) => path), ['sites', 'Sites', 'my-site', 'My-Site'], 'correct paths set')
     assert.equal(tests.setPermission.length, 2, 'correct permissions set')
     assert.end()
+  }
+}
+
+test('basic test', (assert) => {
+  const xml = assetsToXML(tree)
+  parseString(xml, xmlTests(assert))
+})
+
+test('custom Importer instance', (assert) => {
+  const xmlImporter = new Importer({
+    sortActions: true
   })
+  const generateXML = assetsToXML(xmlImporter)
+  const xml = generateXML(tree)
+  parseString(xml, xmlTests(assert))
 })
