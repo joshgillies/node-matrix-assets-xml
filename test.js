@@ -11,6 +11,7 @@ const tree = asset('folder', { name: 'Sites', link: 'type_2', paths: 'sites' },
 
 const xmlTests = (assert) => {
   return (err, { actions: { action: actions } } = { actions: [] }) => {
+    const getValue = prop => ({ [ prop ]: [ value ] }) => value
     const byType = test => ({ action_type: [ type ] }) => type === test
     const tests = {
       create: actions.filter(byType('create_asset')),
@@ -20,9 +21,9 @@ const xmlTests = (assert) => {
     }
     assert.error(err)
     assert.equal(tests.create.length, 2, 'two create_asset tests created')
-    assert.deepEquals(tests.create.map(({ type_code: [ type ] }) => type), ['folder', 'site'], 'correct assets created')
-    assert.deepEquals(new Set(tests.setAttribute.map(({ attribute: [ attribute ] }) => attribute)), new Set(['short_name', 'name']), 'correct asset attributes set')
-    assert.deepEquals(tests.setPath.map(({ path: [ path ] }) => path), ['sites', 'Sites', 'my-site', 'My-Site'], 'correct paths set')
+    assert.deepEquals(tests.create.map(getValue('type_code')), ['folder', 'site'], 'correct assets created')
+    assert.deepEquals(new Set(tests.setAttribute.map(getValue('attribute'))), new Set(['short_name', 'name']), 'correct asset attributes set')
+    assert.deepEquals(tests.setPath.map(getValue('path')), ['sites', 'Sites', 'my-site', 'My-Site'], 'correct paths set')
     assert.equal(tests.setPermission.length, 2, 'correct permissions set')
     assert.end()
   }
