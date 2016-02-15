@@ -1,6 +1,6 @@
 import Importer from 'node-matrix-importer'
 
-module.exports = function assetsToXML (assets) {
+module.exports = function assetsToXML (assets, parentId) {
   let assetMap = []
   let xml
 
@@ -13,11 +13,11 @@ module.exports = function assetsToXML (assets) {
       sortActions: true
     })
 
-    return processAssets(assets)
+    return processAssets(assets, parentId)
   }
 
-  function processAssets (assets) {
-    processAsset(assets)
+  function processAssets (assets, parentId) {
+    processAsset(assets, parentId)
 
     return xml.toString()
   }
