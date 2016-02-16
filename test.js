@@ -13,8 +13,8 @@ const getValue = prop => ({ [ prop ]: [ value ] }) => value
 const byType = test => ({ action_type: [ type ] }) => type === test
 const noop = () => {}
 
-const xmlTests = (assert, pre = noop, post = noop) => {
-  return (err, { actions: { action: actions } } = { actions: [] }) => {
+const xmlTests = (assert, pre = noop, post = noop) =>
+  (err, { actions: { action: actions } } = { actions: [] }) => {
     const tests = {
       create: actions.filter(byType('create_asset')),
       setAttribute: actions.filter(byType('set_attribute_value')),
@@ -30,7 +30,6 @@ const xmlTests = (assert, pre = noop, post = noop) => {
     assert.equal(tests.setPermission.length, 2, 'correct permissions set')
     post(actions)
   }
-}
 
 test('basic test', (assert) => {
   const xml = assetsToXML(tree)
