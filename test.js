@@ -49,8 +49,14 @@ test('custom Importer instance', (assert) => {
   const xmlImporter = new Importer({
     sortActions: true
   })
+
+  xmlImporter.once('create_asset', (asset) => {
+    assert.ok(asset, 'xml importer event triggered')
+  })
+
   const generateXML = assetsToXML(xmlImporter)
   const xml = generateXML(tree)
+
   parseString(xml, xmlTests(assert))
   assert.end()
 })
