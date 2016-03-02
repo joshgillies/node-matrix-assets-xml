@@ -37,7 +37,7 @@ console.log(xml)
 
 ### assetsToXML
 
-`node-matrix-assets-xml` provides an API for generating XML for Squiz Matrix' "Import Assets from XML Tool" via `require('node-matrix-bundler')`.
+`node-matrix-assets-xml` provides an API for generating XML for Squiz Matrix' "Import Assets from XML Tool" via `require('node-matrix-assets-xml')`.
 
 ### var xml = assetsToXML(assets, parentId)
 
