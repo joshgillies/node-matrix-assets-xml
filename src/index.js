@@ -1,6 +1,6 @@
 import Importer from 'node-matrix-importer'
 
-module.exports = function assetsToXML (assets, parentId) {
+export default function assetsToXML (assets, parentId) {
   let assetMap = []
   let xml
 
