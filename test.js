@@ -9,8 +9,8 @@ const tree = asset('folder', { name: 'Sites', link: 'type_2', paths: 'sites' },
   asset('site', { name: 'My Site', paths: 'my-site' })
 )
 
-const getValue = prop => ({ [ prop ]: [ value ] }) => value
-const byType = test => ({ action_type: [ type ] }) => type === test
+const getValue = (prop) => ({ [ prop ]: [ value ] }) => value
+const byType = (test) => ({ action_type: [ type ] }) => type === test
 const noop = () => {}
 
 const xmlTests = (assert, pre = noop, post = noop) =>
