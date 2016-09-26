@@ -36,11 +36,10 @@ export default function assetsToXML (assets, parentId) {
     const links = Object.keys(asset.link)
     const permissions = Object.keys(asset.permissions)
 
-    const noticeLinks = links.filter(noticeLink)
     const [ link ] = links.filter(linkTypeN)
     const value = asset.link[link]
 
-    const { id: assetId } = createAsset({
+    const createdAsset = createAsset({
       parentId,
       type,
       link,
@@ -48,14 +47,15 @@ export default function assetsToXML (assets, parentId) {
       dependant,
       exclusive
     })
+    const { id: assetId } = createdAsset
 
     assetMap[key] = assetId
 
     attributes.forEach(setAttributes(asset.attributes))
     paths.forEach(setPaths)
-    noticeLinks.forEach(createLinks(asset.link))
     permissions.forEach(setPermissions(asset.permissions))
     createChildren(assetId, children)
+    createLinks(createdAsset, asset)
 
     function setAttributes (attributes) {
       return function setAttribute (attribute) {
@@ -73,17 +73,6 @@ export default function assetsToXML (assets, parentId) {
         assetId,
         path
       })
-    }
-
-    function createLinks (links) {
-      return function createLink (link) {
-        xml.createLink({
-          to: assetMap[links[link].key],
-          from: assetId,
-          link: 'notice',
-          value: link
-        })
-      }
     }
 
     function setPermissions (permissions) {
@@ -125,6 +114,19 @@ export default function assetsToXML (assets, parentId) {
   function createChildren (assetId, children) {
     children.forEach(function processChild (child) {
       processAsset(child, assetId)
+    })
+  }
+
+  function createLinks ({ id: assetId }, { link }) {
+    const links = Object.keys(link)
+
+    links.filter(noticeLink).forEach(function createLink (link) {
+      xml.createLink({
+        to: assetMap[links[link].key],
+        from: assetId,
+        link: 'notice',
+        value: link
+      })
     })
   }
 }
