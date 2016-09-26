@@ -126,13 +126,13 @@ export default function assetsToXML (assets, parentId) {
         }
       }
     }
-
-    function linkTypeN (link) {
-      return /^type_[1-3]$/.test(link)
-    }
-
-    function noticeLink (link) {
-      return !linkTypeN(link)
-    }
   }
+}
+
+function linkTypeN (link) {
+  return /^type_[1-3]$/.test(link)
+}
+
+function noticeLink (link) {
+  return !linkTypeN(link)
 }
