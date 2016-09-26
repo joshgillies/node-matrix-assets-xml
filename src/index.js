@@ -32,7 +32,6 @@ export default function assetsToXML (assets, parentId) {
     } = asset
 
     const links = Object.keys(asset.link)
-    const permissions = Object.keys(asset.permissions)
 
     const [ link ] = links.filter(linkTypeN)
     const value = asset.link[link]
@@ -49,39 +48,11 @@ export default function assetsToXML (assets, parentId) {
 
     assetMap[key] = assetId
 
-    permissions.forEach(setPermissions(asset.permissions))
     createChildren(assetId, children)
     createLinks(createdAsset, asset)
     setAttributes(createdAsset, asset)
     setPaths(createdAsset, asset)
-
-    function setPermissions (permissions) {
-      return function setPermission (permission) {
-        const { allow, deny } = permissions[permission]
-
-        allowUsers(allow)
-        denyUsers(deny)
-
-        function allowUsers (users) {
-          permissionsToSet(users, true)
-        }
-
-        function denyUsers (users) {
-          permissionsToSet(users, false)
-        }
-
-        function permissionsToSet (users = [], granted) {
-          users.forEach((userId) => {
-            xml.setPermission({
-              assetId,
-              permission,
-              granted,
-              userId
-            })
-          })
-        }
-      }
-    }
+    setPermissions(createdAsset, asset)
   }
 
   function createAsset (opts) {
@@ -126,6 +97,29 @@ export default function assetsToXML (assets, parentId) {
       xml.addPath({
         assetId,
         path
+      })
+    })
+  }
+
+  function setPermissions ({ id: assetId }, { permissions }) {
+    Object.keys(permissions).forEach(function processPermission (permission) {
+      const {
+        allow: allowed = [],
+        deny: denied = []
+      } = permissions[permission]
+
+      setAssetPermissionForUsers(assetId, permission, true, allowed)
+      setAssetPermissionForUsers(assetId, permission, false, denied)
+    })
+  }
+
+  function setAssetPermissionForUsers (assetId, permission, granted, users) {
+    users.forEach(function setPermission (userId) {
+      xml.setPermission({
+        assetId,
+        permission,
+        granted,
+        userId
       })
     })
   }
