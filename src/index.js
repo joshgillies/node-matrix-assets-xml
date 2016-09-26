@@ -32,7 +32,6 @@ export default function assetsToXML (assets, parentId) {
       type
     } = asset
 
-    const attributes = Object.keys(asset.attributes)
     const links = Object.keys(asset.link)
     const permissions = Object.keys(asset.permissions)
 
@@ -51,22 +50,11 @@ export default function assetsToXML (assets, parentId) {
 
     assetMap[key] = assetId
 
-    attributes.forEach(setAttributes(asset.attributes))
     paths.forEach(setPaths)
     permissions.forEach(setPermissions(asset.permissions))
     createChildren(assetId, children)
     createLinks(createdAsset, asset)
-
-    function setAttributes (attributes) {
-      return function setAttribute (attribute) {
-        const value = attributes[attribute]
-        xml.setAttribute({
-          assetId,
-          attribute,
-          value
-        })
-      }
-    }
+    setAttributes(createdAsset, asset)
 
     function setPaths (path) {
       xml.addPath({
@@ -126,6 +114,17 @@ export default function assetsToXML (assets, parentId) {
         from: assetId,
         link: 'notice',
         value: link
+      })
+    })
+  }
+
+  function setAttributes ({ id: assetId }, { attributes }) {
+    Object.keys(attributes).forEach(function setAttribute (attribute) {
+      const value = attributes[attribute]
+      xml.setAttribute({
+        assetId,
+        attribute,
+        value
       })
     })
   }
