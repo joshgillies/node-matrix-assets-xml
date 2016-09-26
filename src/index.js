@@ -81,13 +81,6 @@ export default function assetsToXML (assets, parentId) {
       })
     }
 
-    function createAsset (opts) {
-      if (typeof opts.value === 'boolean') {
-        delete opts.value
-      }
-      return xml.createAsset(opts)
-    }
-
     function createLinks (links) {
       return function createLink (link) {
         xml.createLink({
@@ -126,6 +119,13 @@ export default function assetsToXML (assets, parentId) {
         }
       }
     }
+  }
+
+  function createAsset (opts) {
+    if (typeof opts.value === 'boolean') {
+      delete opts.value
+    }
+    return xml.createAsset(opts)
   }
 }
 
