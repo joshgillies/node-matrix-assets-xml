@@ -55,13 +55,7 @@ export default function assetsToXML (assets, parentId) {
     paths.forEach(setPaths)
     noticeLinks.forEach(createLinks(asset.link))
     permissions.forEach(setPermissions(asset.permissions))
-    children.forEach(createChild(assetId))
-
-    function createChild (assetId) {
-      return function processChild (child) {
-        processAsset(child, assetId)
-      }
-    }
+    createChildren(assetId, children)
 
     function setAttributes (attributes) {
       return function setAttribute (attribute) {
@@ -126,6 +120,12 @@ export default function assetsToXML (assets, parentId) {
       delete opts.value
     }
     return xml.createAsset(opts)
+  }
+
+  function createChildren (assetId, children) {
+    children.forEach(function processChild (child) {
+      processAsset(child, assetId)
+    })
   }
 }
 
