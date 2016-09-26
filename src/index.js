@@ -28,7 +28,6 @@ export default function assetsToXML (assets, parentId) {
       dependant,
       exclusive,
       key,
-      paths,
       type
     } = asset
 
@@ -50,18 +49,11 @@ export default function assetsToXML (assets, parentId) {
 
     assetMap[key] = assetId
 
-    paths.forEach(setPaths)
     permissions.forEach(setPermissions(asset.permissions))
     createChildren(assetId, children)
     createLinks(createdAsset, asset)
     setAttributes(createdAsset, asset)
-
-    function setPaths (path) {
-      xml.addPath({
-        assetId,
-        path
-      })
-    }
+    setPaths(createdAsset, asset)
 
     function setPermissions (permissions) {
       return function setPermission (permission) {
@@ -125,6 +117,15 @@ export default function assetsToXML (assets, parentId) {
         assetId,
         attribute,
         value
+      })
+    })
+  }
+
+  function setPaths ({ id: assetId }, { paths }) {
+    paths.forEach(function setPath (path) {
+      xml.addPath({
+        assetId,
+        path
       })
     })
   }

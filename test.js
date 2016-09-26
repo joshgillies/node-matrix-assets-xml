@@ -26,7 +26,7 @@ const xmlTests = (assert, pre = noop, post = noop) =>
     assert.equal(tests.create.length, 2, 'two create_asset tests created')
     assert.deepEquals(tests.create.map(getValue('type_code')), ['folder', 'site'], 'correct assets created')
     assert.deepEquals(new Set(tests.setAttribute.map(getValue('attribute'))), new Set(['short_name', 'name']), 'correct asset attributes set')
-    assert.deepEquals(tests.setPath.map(getValue('path')), ['sites', 'Sites', 'my-site', 'My-Site'], 'correct paths set')
+    assert.deepEquals(new Set(tests.setPath.map(getValue('path'))), new Set(['sites', 'Sites', 'my-site', 'My-Site']), 'correct paths set')
     assert.equal(tests.setPermission.length, 2, 'correct permissions set')
     post(actions)
   }
